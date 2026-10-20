@@ -36,6 +36,13 @@ public static class ObjectNames
 
     private static readonly Regex GuidPattern = new("^[0-9A-Fa-f]{32}$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+    /// <summary>
+    /// 名前の 1 区間に使えない文字。<b>OS によらず同じ判定にする</b>（Windows で無効な文字を、Linux でも拒む。
+    /// 移行先のフォルダを別の OS へ持っていっても、名前が壊れないようにするため）。OS が無効とする文字も足す。
+    /// </summary>
+    private static readonly char[] InvalidSegmentChars =
+        [.. Path.GetInvalidFileNameChars(), '<', '>', ':', '"', '|', '?', '*'];
+
     private static readonly HashSet<string> ReservedDeviceNames = new(StringComparer.OrdinalIgnoreCase)
     {
         "CON", "PRN", "AUX", "NUL",
@@ -107,7 +114,7 @@ public static class ObjectNames
                 return "Control characters are not allowed.";
             }
         }
-        var invalidChars = Path.GetInvalidFileNameChars();
+        var invalidChars = InvalidSegmentChars;
         foreach (var segment in objectName.Split('/'))
         {
             if (segment.Length == 0)
