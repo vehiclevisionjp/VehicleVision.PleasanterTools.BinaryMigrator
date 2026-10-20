@@ -20,6 +20,28 @@ https://github.com/Implem/Implem.Pleasanter
 .NET — MIT
 https://github.com/dotnet/runtime/blob/main/LICENSE.TXT
 
+実行時の直接依存（配布物に含める。参照日 2026-10-20）:
+Microsoft.Data.SqlClient 7.1.1 — MIT（SQL Server への接続）
+https://github.com/dotnet/SqlClient/blob/main/LICENSE
+Npgsql 10.0.3 — PostgreSQL License（PostgreSQL への接続）
+https://github.com/npgsql/npgsql/blob/main/LICENSE
+MySqlConnector 2.6.2 — MIT（MySQL への接続）
+https://github.com/mysql-net/MySqlConnector/blob/master/LICENSE
+Azure.Storage.Blobs 12.30.1 — MIT（AzureBlob の読み書き）
+https://github.com/Azure/azure-sdk-for-net/blob/main/LICENSE.txt
+Azure.Identity 1.21.0 — MIT（DefaultAzureCredential による認証）
+https://github.com/Azure/azure-sdk-for-net/blob/main/LICENSE.txt
+System.Security.Cryptography.Pkcs 9.0.21 — MIT（Microsoft.Data.SqlClient の推移的依存の脆弱性を避けるための固定。
+SqlClient が修正版へ追随したら外す）
+https://github.com/dotnet/runtime/blob/main/LICENSE.TXT
+
+推移的依存のうち、MIT・BSD 系・Apache-2.0 以外のもの（要確認。アーキテクチャ方針の「未決定」を参照）:
+Microsoft.Data.SqlClient.SNI.runtime 7.1.0 — Microsoft Software License Terms（独自の許諾。再頒布は条件つきで可。
+Microsoft.Data.SqlClient が必須の依存として引き込む。商用側を含む配布の前に法務確認が要る）
+https://www.nuget.org/packages/Microsoft.Data.SqlClient.SNI.runtime/7.1.0 （パッケージ内の LICENSE.txt）
+Apache.Arrow 22.1.0 — Apache-2.0（Azure.Storage.Blobs が引き込む）
+https://github.com/apache/arrow/blob/main/LICENSE.txt
+
 テスト用の直接依存（配布物には含めない）:
 Microsoft.NET.Test.Sdk — MIT
 https://github.com/microsoft/vstest/blob/main/LICENSE
