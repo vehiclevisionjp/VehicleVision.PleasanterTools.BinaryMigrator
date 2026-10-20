@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\VehicleVision.PleasanterTools.Template.Core\VehicleVision.PleasanterTools.Template.Core.csproj" />
+    <ProjectReference Include="..\..\src\VehicleVision.PleasanterTools.BinaryMigrator.Core\VehicleVision.PleasanterTools.BinaryMigrator.Core.csproj" />
   </ItemGroup>
 
 </Project>

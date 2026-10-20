@@ -1,5 +1,8 @@
-VehicleVision.PleasanterTools.Template
-SPDX-License-Identifier: AGPL-3.0-or-later
+VehicleVision.PleasanterTools.BinaryMigrator
+Copyright (C) PMC Co.,Ltd.
+
+本ソフトウェアはデュアルライセンス（AGPL-3.0-or-later OR LicenseRef-PMC-Commercial）で
+提供されます。詳細は LICENSING.md を参照してください。
 
 開発運用と Actions の構成、および指示同期・参照更新スクリプトは次を参考にしています。
 VehicleVision.PleasanterTools.Questionnaire

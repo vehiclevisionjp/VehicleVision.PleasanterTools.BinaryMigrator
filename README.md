@@ -1,11 +1,11 @@
-# VehicleVision.PleasanterTools.Template
+# VehicleVision.PleasanterTools.BinaryMigrator
 
 Pleasanter 向けツールを作るときの、社内用テンプレートリポジトリです。標準 Web API を叩く別アプリとして、C#／.NET 10 で作ります。
 
 ## 含まれるもの
 
-- 最小の Pleasanter API クライアント（`src/VehicleVision.PleasanterTools.Template.Core`）
-- 接続確認の CLI（`src/VehicleVision.PleasanterTools.Template.Cli`）
+- 最小の Pleasanter API クライアント（`src/VehicleVision.PleasanterTools.BinaryMigrator.Core`）
+- 接続確認の CLI（`src/VehicleVision.PleasanterTools.BinaryMigrator.Cli`）
 - 単体テスト（`tests/`）
 - 参照専用の Pleasanter 本体ソース（`_reference/Implem.Pleasanter`、サブモジュール）
 - CI、CodeQL、依存の脆弱性検査、リリース、参照ソースの定期更新（`.github/workflows/`）
@@ -18,7 +18,7 @@ Pleasanter 向けツールを作るときの、社内用テンプレートリポ
 ```bash
 export PLEASANTER_BASE_URL=https://pleasanter.example.com
 export PLEASANTER_API_KEY=...
-dotnet run --project src/VehicleVision.PleasanterTools.Template.Cli -- check
+dotnet run --project src/VehicleVision.PleasanterTools.BinaryMigrator.Cli -- check
 ```
 
 新しいツールの作り方は [開発ガイド](_documents/開発ガイド.md) を参照してください。

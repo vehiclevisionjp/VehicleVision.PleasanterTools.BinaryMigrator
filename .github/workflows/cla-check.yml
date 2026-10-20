@@ -1,0 +1,135 @@
+# CLA の署名を確かめる
+#
+# ■ なぜ要るか
+#   本製品はデュアルライセンス（AGPL ＋ 商用）である。
+#   **他人の著作物を商用ライセンスで再頒布する権利は、その人から貰わない限り無い。**
+#   署名のない貢献を 1 つでも取り込むと、その部分だけ商用で提供できなくなり、
+#   デュアルの前提が崩れる（`CLA.md`）。
+#
+# ■ なぜ外部のサービスを使わないか
+#   CLA 署名を代行する仕組みは世に幾つかあるが、**PR の作者名という
+#   個人に紐づく情報を外部へ渡すことになる。** 一覧を自分たちで持てば済む話なので、
+#   ここでは `.github/cla/signed.yml` を見るだけにしている。
+#
+# ■ PR のコードは実行しない
+#   見るのは PR の作者と、base 側にある署名の一覧だけ。
+#
+# ■ bot は対象外
+#   Dependabot などが出す PR には、許諾する著作者が居ない。
+#   **加えて Dependabot が起点の pull_request_target では GITHUB_TOKEN が
+#   読み取り専用に落とされる**ため、未署名の案内コメントはそもそも投げられない。
+#
+#   **参照サブモジュールの更新 PR を出す my-repo-automation-bot[bot] も同じ**
+#   （eference-submodule-update.yml）。中身はポインタ 1 つだけで、許諾する著作者が居ない。
+#   ⚠️ **一覧に入れ忘れると、更新のたびに CLA が落ちる。**
+
+name: CLA の確認
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches:
+      - develop
+      - master
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: cla-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  cla:
+    name: CLA へ署名しているか
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # **base 側を取る。** PR 側のコードは見ない。
+      # PR で signed.yml を書き換えても効かないようにするため
+      - name: base 側を取り出す
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: 署名を確かめる
+        id: check
+        env:
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          set -euo pipefail
+
+          list='.github/cla/signed.yml'
+          if [ ! -f "$list" ]; then
+            echo "::error title=署名の一覧が無い::$list が見つかりません"
+            exit 1
+          fi
+
+          echo "PR の作者: $AUTHOR"
+
+          # **bot の PR は CLA の対象外。**
+          # CLA が要るのは他人の著作物を商用ライセンスで再頒布する権利を貰うためであり
+          # （CLA.md）、機械が出す版上げに許諾する著作者は居ない。
+          #
+          # **ジョブごと skip にはしない。** 必須ステータスチェックにしたときの
+          # skipped の扱いに依存させず、成功として報告させる。
+          #
+          # ⚠️ **パターンは必ずクォートすること。** 素の dependabot[bot] は glob の
+          # 文字クラスと解釈され、dependabott などにも当たる
+          case "$AUTHOR" in
+            'dependabot[bot]' | 'github-actions[bot]' | 'my-repo-automation-bot[bot]')
+              echo 'signed=true' >> "$GITHUB_OUTPUT"
+              echo "$AUTHOR は bot なので CLA の確認を省きます。"
+              exit 0
+              ;;
+          esac
+
+          # **login の行だけを見る。** 余計な解釈をしない
+          if grep -Eq "^[[:space:]]*-[[:space:]]*login:[[:space:]]*${AUTHOR}[[:space:]]*$" "$list"; then
+            echo 'signed=true' >> "$GITHUB_OUTPUT"
+            echo '署名を確認しました。'
+            exit 0
+          fi
+
+          echo 'signed=false' >> "$GITHUB_OUTPUT"
+          echo "::error title=CLA が未署名です::$AUTHOR は署名の一覧にありません。CONTRIBUTING.md の「CLA へ署名する」を見てください。"
+          exit 1
+
+      - name: 未署名なら案内する
+        if: failure() && steps.check.outputs.signed == 'false'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const marker = '<!-- cla-check -->';
+            const author = context.payload.pull_request.user.login;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+
+            // **同じ案内を何度も貼らない**
+            if (comments.some((comment) => (comment.body ?? '').includes(marker))) {
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body:
+                `${marker}\n` +
+                `@${author} さん、貢献をありがとうございます。\n\n` +
+                '**取り込む前に CLA への署名をお願いします。**\n\n' +
+                '本製品はデュアルライセンス（AGPL ＋ 商用）です。' +
+                '他人の著作物を商用ライセンスで再頒布する権利は、' +
+                'その人から貰わない限りありません。\n\n' +
+                '1. [CLA.md](../blob/develop/CLA.md) を読む\n' +
+                '2. 「CLA への署名」の Issue を立てる\n' +
+                '3. こちらで一覧へ追記します\n\n' +
+                '**会社の業務として貢献される場合は、法人用の署名も要ります。**\n\n' +
+                '詳しくは [CONTRIBUTING.md](../blob/develop/CONTRIBUTING.md) を見てください。',
+            });

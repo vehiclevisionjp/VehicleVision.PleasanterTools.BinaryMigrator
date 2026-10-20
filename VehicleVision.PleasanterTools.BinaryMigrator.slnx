@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/VehicleVision.PleasanterTools.BinaryMigrator.Core/VehicleVision.PleasanterTools.BinaryMigrator.Core.csproj" />
+    <Project Path="src/VehicleVision.PleasanterTools.BinaryMigrator.Cli/VehicleVision.PleasanterTools.BinaryMigrator.Cli.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/VehicleVision.PleasanterTools.BinaryMigrator.Core.Tests/VehicleVision.PleasanterTools.BinaryMigrator.Core.Tests.csproj" />
+  </Folder>
+</Solution>

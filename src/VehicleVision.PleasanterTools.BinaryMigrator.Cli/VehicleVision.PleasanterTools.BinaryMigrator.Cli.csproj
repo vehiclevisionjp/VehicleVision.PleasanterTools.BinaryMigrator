@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>VehicleVision.PleasanterTools.BinaryMigrator</AssemblyName>
+    <RootNamespace>VehicleVision.PleasanterTools.BinaryMigrator.Cli</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VehicleVision.PleasanterTools.BinaryMigrator.Core\VehicleVision.PleasanterTools.BinaryMigrator.Core.csproj" />
+  </ItemGroup>
+
+</Project>
