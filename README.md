@@ -1,28 +1,27 @@
 # VehicleVision.PleasanterTools.BinaryMigrator
 
-Pleasanter 向けツールを作るときの、社内用テンプレートリポジトリです。標準 Web API を叩く別アプリとして、C#／.NET 10 で作ります。
+Pleasanter に添付されたファイル（`Binaries`）の保管先を、**Rds・Local・AzureBlob の間で移す**ためのコマンドラインツールです。
+Pleasanter 本体の設定（`BinaryStorage.json` の `Provider`）を切り替えたあと、既存のファイルを新しい保管先へ移すときに使います。
 
-## 含まれるもの
+> **開発中です。** まだ動作するものはありません。仕様は [アーキテクチャ方針](_documents/アーキテクチャ方針.md) にあります。
 
-- 最小の Pleasanter API クライアント（`src/VehicleVision.PleasanterTools.BinaryMigrator.Core`）
-- 接続確認の CLI（`src/VehicleVision.PleasanterTools.BinaryMigrator.Cli`）
-- 単体テスト（`tests/`）
-- 参照専用の Pleasanter 本体ソース（`_reference/Implem.Pleasanter`、サブモジュール）
-- CI、CodeQL、依存の脆弱性検査、リリース、参照ソースの定期更新（`.github/workflows/`）
-- AI エージェント向けの共通指示（`.github/copilot-instructions.md`、`AGENTS.md`、`CLAUDE.md`）
+## 移行できる組み合わせ
 
-## 使い方
+| 移行元 | 移行先 |
+| --- | --- |
+| Rds（`Binaries.Bin`） | Local、AzureBlob |
+| Local | AzureBlob |
+| AzureBlob | Local |
 
-接続確認の CLI を動かすには、接続先を環境変数で渡します。
+**Rds への書き戻しは対象外です。**
 
-```bash
-export PLEASANTER_BASE_URL=https://pleasanter.example.com
-export PLEASANTER_API_KEY=...
-dotnet run --project src/VehicleVision.PleasanterTools.BinaryMigrator.Cli -- check
-```
+## 方針
 
-新しいツールの作り方は [開発ガイド](_documents/開発ガイド.md) を参照してください。
+- **既定では移行元を消しません。** 移行元の削除は、明示したオプションのときだけ行います
+- コピーしたあとに、大きさとハッシュで整合を確かめます
+- Pleasanter 本体のコードは取り込みません（保管先の置き方は、本体のソースを事実確認の参照として読んだ上で、このツールで実装しています）
 
 ## ライセンス
 
-既定は AGPL-3.0-or-later です（[LICENSE](LICENSE)）。商用公開で AGPL と商用のデュアルライセンスにする手順は [ライセンス](_documents/ライセンス.md) を参照してください。依存のライセンスは [NOTICE](NOTICE) にあります。
+AGPL-3.0-or-later と商用のデュアルライセンスです。詳しくは [LICENSING.md](LICENSING.md) を、貢献は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+依存のライセンスは [NOTICE](NOTICE) にあります。開発環境と運用は [開発ガイド](_documents/開発ガイド.md) と [開発運用](_documents/開発運用.md) にあります。

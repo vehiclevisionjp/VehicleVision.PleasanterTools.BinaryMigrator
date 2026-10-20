@@ -19,7 +19,9 @@
 
 ## プロジェクト
 
-Pleasanter 向けツールのテンプレート。C#／.NET 10 で、標準 Web API を叩く別アプリとして作る。`src/*.Core` が最小の API クライアント、`src/*.Cli` が接続確認の CLI。新しいツールは [開発ガイド](../_documents/開発ガイド.md) の手順でこのテンプレートから作る。現状と未決定事項は [アーキテクチャ方針](../_documents/アーキテクチャ方針.md) を確認する。
+Pleasanter に添付されたファイル（`Binaries`）の保管先を、Rds・Local・AzureBlob の間で移すコマンドラインツール。C#／.NET 10。
+移行元は Rds・Local・AzureBlob、移行先は Local・AzureBlob（**Rds への書き戻しは対象外**）。**既定では移行元を消さない**（消すのは明示のオプション）。
+現状と未決定事項は [アーキテクチャ方針](../_documents/アーキテクチャ方針.md) を確認する。
 
 ## 作業の進め方
 
