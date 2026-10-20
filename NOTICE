@@ -20,6 +20,32 @@ https://github.com/Implem/Implem.Pleasanter
 .NET — MIT
 https://github.com/dotnet/runtime/blob/main/LICENSE.TXT
 
+実行時の直接依存（配布物に含める。参照日 2026-10-20）:
+Microsoft.Data.SqlClient 7.1.1 — MIT（SQL Server への接続）
+https://github.com/dotnet/SqlClient/blob/main/LICENSE
+Npgsql 10.0.3 — PostgreSQL License（PostgreSQL への接続）
+https://github.com/npgsql/npgsql/blob/main/LICENSE
+MySqlConnector 2.6.2 — MIT（MySQL への接続）
+https://github.com/mysql-net/MySqlConnector/blob/master/LICENSE
+Azure.Storage.Blobs 12.30.1 — MIT（AzureBlob の読み書き）
+https://github.com/Azure/azure-sdk-for-net/blob/main/LICENSE.txt
+Azure.Identity 1.21.0 — MIT（DefaultAzureCredential による認証）
+https://github.com/Azure/azure-sdk-for-net/blob/main/LICENSE.txt
+System.Security.Cryptography.Pkcs 9.0.21 — MIT（Microsoft.Data.SqlClient の推移的依存の脆弱性を避けるための固定。
+SqlClient が修正版へ追随したら外す）
+https://github.com/dotnet/runtime/blob/main/LICENSE.TXT
+
+推移的依存のうち、MIT・BSD 系・Apache-2.0 以外のもの（2026-10-20 に、条件を明記したうえで許容すると決定。法務の確認は別途）:
+Microsoft.Data.SqlClient.SNI.runtime 7.1.0 — Microsoft Software License Terms（MICROSOFT.DATA.SQLCLIENT.SNI LIBRARY。独自の許諾）
+Microsoft.Data.SqlClient が推移的に伴う、Windows 向けのネイティブ SNI。パッケージ内の LICENSE.txt、参照日 2026-10-20。
+再頒布の条件: アプリの一部としてのみ頒布する（単体で頒布しない）／頒布先に、逆コンパイルの禁止・著作権表示の保全・
+単体での再配布の禁止・保証の否認・責任の制限・輸出規制の遵守など、この許諾と同程度に守る条件へ同意させる／
+アプリの頒布・利用に関する請求から Microsoft を補償する（改変していない SNI だけに基づく請求を除く）。
+頒布するときは、上の条件を利用許諾（商用条件・EULA）へ反映する。「依存は寛容ライセンスに限る」の例外として扱う。
+https://www.nuget.org/packages/Microsoft.Data.SqlClient.SNI.runtime/7.1.0
+Apache.Arrow 22.1.0 — Apache-2.0（Azure.Storage.Blobs が引き込む）
+https://github.com/apache/arrow/blob/main/LICENSE.txt
+
 テスト用の直接依存（配布物には含めない）:
 Microsoft.NET.Test.Sdk — MIT
 https://github.com/microsoft/vstest/blob/main/LICENSE
