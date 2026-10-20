@@ -24,7 +24,7 @@ if (-not $Repository) {
 $ruleset = Get-Content -LiteralPath (Join-Path $repoRoot '.github/rulesets/protected-branches.json') -Raw -Encoding utf8 | ConvertFrom-Json
 if ($IncludeCodeQL) {
     $checks = ($ruleset.rules | Where-Object type -eq 'required_status_checks').parameters.required_status_checks
-    $checks += [pscustomobject]@{ context = 'CodeQL 解析（C#）' }
+    $checks += [pscustomobject]@{ context = 'Analyze (csharp)' }
     ($ruleset.rules | Where-Object type -eq 'required_status_checks').parameters.required_status_checks = $checks
 }
 $body = $ruleset | ConvertTo-Json -Depth 10

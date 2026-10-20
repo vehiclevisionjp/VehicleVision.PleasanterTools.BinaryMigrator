@@ -49,7 +49,7 @@
 #   - GITHUB_TOKEN の操作ではワークフローが起動しない
 #     https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow
 #   - actions/checkout v7 は .github/workflows/ci.yml と同じ版に揃えた（勝手に上げない）
-name: 参照サブモジュールの最新化
+name: Reference Submodule Update
 
 on:
   # 毎日 08:00 JST（前日 23:00 UTC）。**cron は UTC 固定**だが、
@@ -69,7 +69,7 @@ permissions:
 
 jobs:
   check:
-    name: 上流の main と突き合わせる
+    name: check
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -105,7 +105,7 @@ jobs:
           } >>"$GITHUB_STEP_SUMMARY"
 
   update:
-    name: GitHub App で更新 PR を作る
+    name: update
     needs: check
     if: needs.check.outputs.needs_update == 'true'
     runs-on: ubuntu-latest

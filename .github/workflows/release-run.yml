@@ -1,4 +1,4 @@
-name: リリースタグ作成
+name: Create Release Tag
 on:
   workflow_dispatch:
     inputs:
@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   tag:
-    name: リリース候補を確認してタグを付ける
+    name: tag
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -47,7 +47,7 @@ jobs:
         run: |
           $checks = gh api "repos/$env:REPOSITORY/commits/$env:COMMIT/check-runs?per_page=100" | ConvertFrom-Json
           if ($LASTEXITCODE -ne 0) { throw '検査結果を取得できません。' }
-          $required = @('ビルドと単体テスト','指示と参照の検査','CodeQL 解析（C#）','NuGet 依存の脆弱性検査','npm 依存の脆弱性検査')
+          $required = @('build-test','instructions','Analyze (csharp)','nuget-audit','npm-audit')
           foreach ($name in $required) {
             $latest = $checks.check_runs | Where-Object name -eq $name | Sort-Object started_at -Descending | Select-Object -First 1
             $ok = if ($name -like 'CodeQL*') { @('success','skipped') } else { @('success') }

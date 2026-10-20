@@ -29,10 +29,10 @@
       "parameters": {
         "strict_required_status_checks_policy": false,
         "required_status_checks": [
-          { "context": "ビルドと単体テスト" },
-          { "context": "指示と参照の検査" },
-          { "context": "NuGet 依存の脆弱性検査" },
-          { "context": "npm 依存の脆弱性検査" }
+          { "context": "build-test" },
+          { "context": "instructions" },
+          { "context": "nuget-audit" },
+          { "context": "npm-audit" }
         ]
       }
     }
