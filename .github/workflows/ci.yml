@@ -15,7 +15,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
 jobs:
   build-test:
-    name: ビルドと単体テスト
+    name: build-test
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -57,7 +57,7 @@ jobs:
           path: TestResults/*.trx
           if-no-files-found: warn
   instructions:
-    name: 指示と参照の検査
+    name: instructions
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

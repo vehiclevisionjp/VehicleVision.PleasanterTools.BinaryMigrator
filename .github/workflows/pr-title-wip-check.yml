@@ -1,4 +1,4 @@
-name: PR タイトルの検査
+name: PR Title WIP Check
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize, ready_for_review, converted_to_draft]
@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   wip-title:
-    name: WIP が外れているか
+    name: wip-title
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

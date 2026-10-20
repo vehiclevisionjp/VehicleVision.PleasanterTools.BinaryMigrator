@@ -23,7 +23,7 @@
 #   （eference-submodule-update.yml）。中身はポインタ 1 つだけで、許諾する著作者が居ない。
 #   ⚠️ **一覧に入れ忘れると、更新のたびに CLA が落ちる。**
 
-name: CLA の確認
+name: CLA Check
 
 on:
   pull_request_target:
@@ -42,7 +42,7 @@ concurrency:
 
 jobs:
   cla:
-    name: CLA へ署名しているか
+    name: cla
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

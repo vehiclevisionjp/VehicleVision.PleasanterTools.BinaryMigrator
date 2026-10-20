@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   verify:
-    name: リリース検証と配布物作成
+    name: verify
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
@@ -73,7 +73,7 @@ jobs:
             ${{ steps.package.outputs.checksum }}
           if-no-files-found: error
   publish:
-    name: GitHub Releases へ公開する
+    name: release
     needs: verify
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
     runs-on: ubuntu-latest
