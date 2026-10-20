@@ -1,0 +1,79 @@
+# GitHub App（MY_REPO_AUTOMATION_BOT）の短期トークンで Issue と Draft PR を作る。
+# GITHUB_TOKEN の承認権限は変更しない。App の操作から通常の CI が起動する。
+name: 参照サブモジュールの最新化
+on:
+  schedule:
+    - cron: '0 23 * * *'
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  check:
+    name: 上流の最新タグと突き合わせる
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      needs_update: ${{ steps.check.outputs.needs_update }}
+      latest_tag: ${{ steps.check.outputs.latest_tag }}
+      latest_sha: ${{ steps.check.outputs.latest_sha }}
+      current_tag: ${{ steps.check.outputs.current_tag }}
+      current_sha: ${{ steps.check.outputs.current_sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: develop
+          submodules: false
+          persist-credentials: false
+      - name: 最新リリースタグを調べる
+        id: check
+        run: bash scripts/reference-submodule-check.sh
+      - name: 検出結果を残す
+        env:
+          NEEDS_UPDATE: ${{ steps.check.outputs.needs_update }}
+          CURRENT_TAG: ${{ steps.check.outputs.current_tag }}
+          LATEST_TAG: ${{ steps.check.outputs.latest_tag }}
+        run: |
+          printf '固定位置: `%s`\n\n上流: `%s`\n\n更新が必要: `%s`\n' \
+            "$CURRENT_TAG" "$LATEST_TAG" "$NEEDS_UPDATE" >> "$GITHUB_STEP_SUMMARY"
+  update:
+    name: GitHub App で更新 PR を作る
+    needs: check
+    if: needs.check.outputs.needs_update == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: App の設定を確認する
+        env:
+          HAS_CLIENT_ID: ${{ vars.MY_REPO_AUTOMATION_BOT_CLIENT_ID != '' }}
+          HAS_PRIVATE_KEY: ${{ secrets.MY_REPO_AUTOMATION_BOT_PRIVATE_KEY != '' }}
+        run: |
+          if [ "$HAS_CLIENT_ID" != true ] || [ "$HAS_PRIVATE_KEY" != true ]; then
+            echo '::error::MY_REPO_AUTOMATION_BOT_CLIENT_ID と MY_REPO_AUTOMATION_BOT_PRIVATE_KEY を登録してください。'
+            exit 1
+          fi
+      - name: 短期の App トークンを発行する
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.MY_REPO_AUTOMATION_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.MY_REPO_AUTOMATION_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
+      - uses: actions/checkout@v7
+        with:
+          ref: develop
+          submodules: false
+          token: ${{ steps.app-token.outputs.token }}
+      - name: ポインタを進めて Issue と Draft PR を作る
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          BASE_BRANCH: develop
+          LATEST_TAG: ${{ needs.check.outputs.latest_tag }}
+          LATEST_SHA: ${{ needs.check.outputs.latest_sha }}
+          CURRENT_TAG: ${{ needs.check.outputs.current_tag }}
+          CURRENT_SHA: ${{ needs.check.outputs.current_sha }}
+        run: bash scripts/reference-submodule-open-pr.sh
