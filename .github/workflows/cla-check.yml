@@ -20,7 +20,7 @@
 #   読み取り専用に落とされる**ため、未署名の案内コメントはそもそも投げられない。
 #
 #   **参照サブモジュールの更新 PR を出す my-repo-automation-bot[bot] も同じ**
-#   （eference-submodule-update.yml）。中身はポインタ 1 つだけで、許諾する著作者が居ない。
+#   （eference-submodule-update.yml）。中身はポインタ 1 つだけで、許諾する著作者が居ない。
 #   ⚠️ **一覧に入れ忘れると、更新のたびに CLA が落ちる。**
 
 name: CLA Check
