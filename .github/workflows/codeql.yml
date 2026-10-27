@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   analyze:
-    name: CodeQL 解析（C#）
+    name: Analyze (csharp)
     # コードスキャンは public か、GHAS を有効にした private/internal だけで使える。後者はリポジトリ変数 CODEQL_ENABLED=true で有効にする。
     if: github.event.repository.visibility == 'public' || vars.CODEQL_ENABLED == 'true'
     runs-on: ubuntu-latest

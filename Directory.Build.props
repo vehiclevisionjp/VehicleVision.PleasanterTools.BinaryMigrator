@@ -9,6 +9,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- .editorconfig の IDE 規則（{} の省略禁止など）を、ビルドで強制する -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <NuGetAudit>true</NuGetAudit>
     <NuGetAuditMode>all</NuGetAuditMode>
@@ -20,13 +22,19 @@
     <VersionPrefix>0.1.0</VersionPrefix>
   </PropertyGroup>
 
-  <!--
-    既定は AGPL-3.0-or-later。商用公開で AGPL と商用のデュアルライセンスにする手順は
-    _documents/ライセンス.md を参照する。切り替えるときは PackageLicenseExpression を
-    PackageLicenseFile へ置き換える（NuGet は LicenseRef-* を含む式を受け付けない）。
-  -->
   <PropertyGroup>
-    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/vehiclevisionjp/VehicleVision.PleasanterTools.Template</RepositoryUrl>
+    <Company>PMC Co., Ltd. IT Solution Div.</Company>
+    <Authors>PMC Co., Ltd. IT Solution Div.</Authors>
+    <Product>VehicleVision.PleasanterTools.BinaryMigrator</Product>
+    <Copyright>Copyright (C) PMC Co., Ltd. IT Solution Div.</Copyright>
+    <!-- デュアルライセンス（AGPL-3.0-or-later OR 商用）。LICENSING.md を参照。
+         NuGet の PackageLicenseExpression は LicenseRef-* を含む式を受け付けないため
+         ライセンスファイルを参照する -->
+    <PackageLicenseFile>LICENSING.md</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/vehiclevisionjp/VehicleVision.PleasanterTools.BinaryMigrator</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)LICENSING.md" Pack="true" PackagePath="" />
+  </ItemGroup>
 </Project>

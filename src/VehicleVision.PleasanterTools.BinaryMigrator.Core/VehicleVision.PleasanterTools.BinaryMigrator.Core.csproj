@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="VehicleVision.PleasanterTools.BinaryMigrator.Core.Tests" />
+  </ItemGroup>
+
+  <!-- 依存は寛容ライセンスのものに限る（NOTICE に名称・版・ライセンス・入手元を記載する） -->
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.21.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.30.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
+    <PackageReference Include="MySqlConnector" Version="2.6.2" />
+    <PackageReference Include="Npgsql" Version="10.0.3" />
+    <!-- Microsoft.Data.SqlClient 7.1.1 の推移的依存 9.0.18 に既知の脆弱性（GHSA-2fmv-rv2c-59x7、GHSA-846f-f764-76mx）があるため、
+         修正版へ固定する。SqlClient が追随したら外す -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
+  </ItemGroup>
+
+</Project>

@@ -14,8 +14,8 @@
 //     customRules  独自の規則（モジュールのパス。オブジェクトか、その配列を export する）
 //
 // ■ 対象
-//   Git が追跡している .md ＋ 追跡していないが無視されていない .md。サブモジュール
-//   （_reference）・node_modules・一時成果物は、Git の側で除かれる。
+//   Git が追跡している .md ＋ 追跡していないが無視されていない .md。参照専用ソース
+//   （_reference/Implem.Pleasanter）・node_modules・一時成果物は、Git の側で除かれる。
 //
 // ■ 使い方
 //   node scripts/markdownlint.mjs          検査（違反があれば 1 で終わる）

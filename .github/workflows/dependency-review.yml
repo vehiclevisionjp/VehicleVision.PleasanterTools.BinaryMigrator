@@ -1,4 +1,4 @@
-name: 依存の確認
+name: Dependency Review
 on:
   pull_request:
     branches: [develop, master]
@@ -6,7 +6,7 @@ permissions:
   contents: read
 jobs:
   dependency-review:
-    name: 入ってくる依存を見る
+    name: dependency-review
     # 依存レビューも public か GHAS 有効のリポジトリだけで使える（変数 CODEQL_ENABLED=true で有効）。
     if: github.event.repository.visibility == 'public' || vars.CODEQL_ENABLED == 'true'
     runs-on: ubuntu-latest

@@ -1,0 +1,19 @@
+# CLA へ署名した人の一覧。
+#
+# **ここに載っている GitHub の利用者だけが、貢献を取り込んでもらえる。**
+# 追記するのは当社（署名を受け取ってから）。
+#
+# 書き方
+#   - login: GitHub のログイン名
+#     signed: 署名を受け取った日（YYYY-MM-DD）
+#     type: individual | corporate
+#     note: 補足（法人名など）
+#
+# **一覧から外しても、それ以前の貢献に対する許諾は有効。**
+signatories:
+  # Questionnaire・CalendarFeed の一覧と同じ署名（2026-08-19）を引き継いだ。署名者は当社の従業員（このリポジトリの作者）。
+  # AtomFeed でも引き継いだ署名として扱う（2026-10-17 決定）。CLA.md の草案の法務確認は別途。
+  - login: pmc-ko
+    signed: 2026-08-19
+    type: corporate
+    note: 株式会社ピー・エム・シー（従業員としての貢献。Questionnaire・CalendarFeed の署名を引き継ぎ）
