@@ -55,8 +55,7 @@ Pleasanter は、行の `Bin` が NULL でなければ Rds の値を返し、NUL
 
 .NET 10 ランタイムが必要です。次のどちらかで入れます。
 
-- **dotnet tool（NuGet）**: `dotnet tool install --global VehicleVision.PleasanterTools.BinaryMigrator` で入れ、`pleasanter-binary-migrator` コマンドで実行します（更新は `dotnet tool update --global VehicleVision.PleasanterTools.BinaryMigrator`）。
-  以降の例の `binary-migrator` は、このコマンド名（`pleasanter-binary-migrator`）に読み替えてください
+- **dotnet tool（NuGet）**: `dotnet tool install --global VehicleVision.PleasanterTools.BinaryMigrator` で入れ、`binary-migrator` コマンドで実行します（更新は `dotnet tool update --global VehicleVision.PleasanterTools.BinaryMigrator`）。
 - **ZIP**: [GitHub Releases](https://github.com/vehiclevisionjp/VehicleVision.PleasanterTools.BinaryMigrator/releases) の `…-portable.zip` を展開します
 
 ## 使い方

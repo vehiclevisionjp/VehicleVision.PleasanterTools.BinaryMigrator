@@ -13,7 +13,7 @@
   -->
   <PropertyGroup>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>pleasanter-binary-migrator</ToolCommandName>
+    <ToolCommandName>binary-migrator</ToolCommandName>
     <PackageId>VehicleVision.PleasanterTools.BinaryMigrator</PackageId>
     <Description>Pleasanter に添付されたファイル（Binaries）の保管先を、Rds・Local・AzureBlob の間で移すコマンドラインツール。</Description>
     <PackageTags>pleasanter;vehiclevision;binaries;migration;azure-blob;dotnet-tool</PackageTags>
