@@ -31,7 +31,7 @@ Azure.Storage.Blobs 12.30.1 — MIT（AzureBlob の読み書き）
 https://github.com/Azure/azure-sdk-for-net/blob/main/LICENSE.txt
 Azure.Identity 1.21.0 — MIT（DefaultAzureCredential による認証）
 https://github.com/Azure/azure-sdk-for-net/blob/main/LICENSE.txt
-System.Security.Cryptography.Pkcs 9.0.21 — MIT（Microsoft.Data.SqlClient の推移的依存の脆弱性を避けるための固定。
+System.Security.Cryptography.Pkcs 10.0.14 — MIT（Microsoft.Data.SqlClient の推移的依存の脆弱性を避けるための固定。
 SqlClient が修正版へ追随したら外す）
 https://github.com/dotnet/runtime/blob/main/LICENSE.TXT
 
