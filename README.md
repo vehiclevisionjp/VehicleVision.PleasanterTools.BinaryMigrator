@@ -51,6 +51,13 @@ Pleasanter は、行の `Bin` が NULL でなければ Rds の値を返し、NUL
 
 `Bin` を NULL にしたまま `Provider` が `Rds` のままだと、そのファイルは開けなくなります。
 
+## 導入
+
+.NET 10 ランタイムが必要です。次のどちらかで入れます。
+
+- **dotnet tool（NuGet）**: `dotnet tool install --global VehicleVision.PleasanterTools.BinaryMigrator` で入れ、`binary-migrator` コマンドで実行します（更新は `dotnet tool update --global VehicleVision.PleasanterTools.BinaryMigrator`）。
+- **ZIP**: [GitHub Releases](https://github.com/vehiclevisionjp/VehicleVision.PleasanterTools.BinaryMigrator/releases) の `…-portable.zip` を展開します
+
 ## 使い方
 
 ```text
@@ -58,7 +65,7 @@ binary-migrator migrate --from <rds|local|azure> --to <local|azure> [オプシ�
 binary-migrator --help
 ```
 
-ビルドしたものは `VehicleVision.PleasanterTools.BinaryMigrator`（`dotnet VehicleVision.PleasanterTools.BinaryMigrator.dll`）として実行します。
+ZIP やビルドしたものは `VehicleVision.PleasanterTools.BinaryMigrator`（`dotnet VehicleVision.PleasanterTools.BinaryMigrator.dll`）として実行します。
 コンソールに出る文字列は英語です（Azure の Kudu の Debug console で日本語が化けるため）。
 
 ### 共通のオプション

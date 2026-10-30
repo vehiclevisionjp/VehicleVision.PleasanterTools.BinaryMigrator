@@ -1,11 +1,29 @@
 # タグ・master・版整合性検査と dry-run の運用は Questionnaire から採用した。
+#
+# タグ vX.Y.Z で、GitHub Release（配布 ZIP）と nuget.org（dotnet tool）へ公開する。手順は _documents/リリース手順.md。
+# verify は公開せず、配布 ZIP と nupkg の作成まで行う。PR と dry-run（workflow_dispatch の既定）は verify だけが動く。
+# publish（GitHub Release）と publish-nuget（nuget.org）は、タグの push か dry_run=false の dispatch のときだけ動く。
+#
+# nuget.org への認証は Trusted Publishing（GitHub Actions の OIDC）。**長期の API キーは持たない。**
+# NuGet/login が OIDC トークンを nuget.org へ渡して、1 時間有効の API キーを受け取る。
+# Trusted Publishing の前提（管理者の作業。_documents/リリース手順.md「nuget.org の準備」）:
+#   - nuget.org の Trusted Publishing に、このリポジトリ・このワークフロー（release.yml）のポリシーがあること
+#   - 変数 NUGET_ORG_USER（組織の変数）に、公開用の共用アカウントの nuget.org プロフィール名
+#     （メールアドレスではない）が入っていること
+#
+# **公開した版は取り消せない（nuget.org では削除できず、非推奨にできるだけ）。** タグも付け直せない。
+# verify を通ってから push する。初回は両方の dry-run（release-run と、このワークフローの dispatch）を回すこと。
+#
+# 参照した一次情報（2026-10-29 参照）
+#   - Trusted Publishing: https://learn.microsoft.com/nuget/nuget-org/trusted-publishing
+#   - NuGet/login v1.2.0: https://github.com/NuGet/login
 name: Release
 on:
   push:
     tags: ['v[0-9]*']
   pull_request:
     branches: [develop, master]
-    paths: ['.github/workflows/release*.yml', 'scripts/package.ps1', 'scripts/release-check.ps1', 'Directory.Build.props', 'package*.json']
+    paths: ['.github/workflows/release*.yml', 'scripts/package.ps1', 'scripts/release-check.ps1', 'Directory.Build.props', 'package*.json', 'src/**/*.csproj', 'README.md', 'LICENSING.md', 'LICENSE*', 'NOTICE']
   workflow_dispatch:
     inputs:
       dry_run:
@@ -28,6 +46,7 @@ jobs:
     timeout-minutes: 20
     outputs:
       tag: ${{ steps.check.outputs.tag }}
+      version: ${{ steps.check.outputs.version }}
       prerelease: ${{ steps.check.outputs.prerelease }}
     steps:
       - uses: actions/checkout@v7
@@ -71,6 +90,41 @@ jobs:
           path: |
             ${{ steps.package.outputs.zip }}
             ${{ steps.package.outputs.checksum }}
+          if-no-files-found: error
+      - name: NuGet パッケージ（dotnet tool）を作る
+        # pdb は含めない（配布 ZIP と同じ。DebugType=None）。Core は別パッケージにせず Cli の出力へ含まれる
+        run: >
+          dotnet pack src/VehicleVision.PleasanterTools.BinaryMigrator.Cli/VehicleVision.PleasanterTools.BinaryMigrator.Cli.csproj
+          -c Release --no-restore -p:Version="$RELEASE_VERSION" -p:DebugType=None -p:DebugSymbols=false -o nupkg
+        env:
+          RELEASE_VERSION: ${{ steps.check.outputs.version }}
+      - name: nupkg の中身を確認する
+        env:
+          RELEASE_VERSION: ${{ steps.check.outputs.version }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          packages=(nupkg/*.nupkg)
+          if [ "${#packages[@]}" -ne 1 ]; then echo "::error::nupkg が 1 つではありません: ${packages[*]:-なし}"; exit 1; fi
+          nupkg="${packages[0]}"
+          expected="nupkg/VehicleVision.PleasanterTools.BinaryMigrator.${RELEASE_VERSION}.nupkg"
+          if [ "$nupkg" != "$expected" ]; then echo "::error::nupkg の名前($nupkg)が期待($expected)と合わない"; exit 1; fi
+          entries=$(unzip -Z1 "$nupkg")
+          echo "$entries"
+          for required in README.md LICENSING.md LICENSE LICENSE-COMMERCIAL.md NOTICE \
+            tools/net10.0/any/DotnetToolSettings.xml \
+            tools/net10.0/any/VehicleVision.PleasanterTools.BinaryMigrator.dll \
+            tools/net10.0/any/VehicleVision.PleasanterTools.BinaryMigrator.Core.dll; do
+            if ! echo "$entries" | grep -Fxq "$required"; then echo "::error::nupkg に $required がありません"; exit 1; fi
+          done
+          if echo "$entries" | grep -Eiq '\.pdb$|(^|/)(_reference|\.git|\.env|appsettings\.Local\.json)(/|$)'; then
+            echo "::error::nupkg に配布対象外のファイル（pdb・参照ソース・Git メタデータ・設定・秘密）があります"; exit 1
+          fi
+          unzip -p "$nupkg" '*.nuspec' | grep -F '<packageType name="DotnetTool" />'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: NuGet パッケージ
+          path: nupkg/*.nupkg
           if-no-files-found: error
   publish:
     name: release
@@ -120,3 +174,57 @@ jobs:
           args=("$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" --notes-file release-notes.md)
           if [ "$PRERELEASE" = 'true' ]; then args+=(--prerelease); fi
           gh release create "${args[@]}" release-assets/*.zip release-assets/*.zip.sha256 LICENSE NOTICE
+  publish-nuget:
+    name: publish-nuget
+    needs: verify
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # nuget.org へ渡す OIDC トークンを発行するために要る
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: NuGet パッケージ
+          path: nupkg
+      - name: nupkg の版がタグと一致するか確認する
+        env:
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          packages=(nupkg/*.nupkg)
+          if [ "${#packages[@]}" -ne 1 ]; then echo "::error::nupkg が 1 つではありません"; exit 1; fi
+          expected="nupkg/VehicleVision.PleasanterTools.BinaryMigrator.${RELEASE_VERSION}.nupkg"
+          if [ "${packages[0]}" != "$expected" ]; then
+            echo "::error::nupkg(${packages[0]})がタグの版($expected)と合わない"; exit 1
+          fi
+          version=$(unzip -p "${packages[0]}" '*.nuspec' | sed -n 's:.*<version>\(.*\)</version>.*:\1:p')
+          if [ "$version" != "$RELEASE_VERSION" ]; then
+            echo "::error::nuspec の版($version)がタグの版($RELEASE_VERSION)と合わない"; exit 1
+          fi
+      - name: NuGet のユーザー名が設定されているか
+        env:
+          NUGET_ORG_USER: ${{ vars.NUGET_ORG_USER }}
+        run: |
+          if [ -z "$NUGET_ORG_USER" ]; then
+            echo "::error title=変数 NUGET_ORG_USER が未設定です::組織の変数 NUGET_ORG_USER に、公開用の共用アカウントの nuget.org プロフィール名（メールアドレスではない）を登録し、このリポジトリへ共有すること（_documents/リリース手順.md）"
+            exit 1
+          fi
+      - name: nuget.org の API キーを受け取る（OIDC。1 時間有効）
+        id: login
+        # 公開の認証を扱うので、コミットで固定する
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        with:
+          user: ${{ vars.NUGET_ORG_USER }}
+      - name: nuget.org へ公開する
+        # --skip-duplicate: 同じ版の再実行を害のないものにする
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: >
+          dotnet nuget push "nupkg/*.nupkg"
+          --api-key "$NUGET_API_KEY"
+          --source "https://api.nuget.org/v3/index.json"
+          --skip-duplicate

@@ -310,8 +310,8 @@
       },
       "System.Security.Cryptography.Pkcs": {
         "type": "Transitive",
-        "resolved": "9.0.22",
-        "contentHash": "pc/KIRHtCS2ZbS+LcdJARNCVOb5zKbD5700swUJr3IvQRQCxMIArW7P0I3qzfJlWtIlYscElEqb4tPmfD3Wa/A=="
+        "resolved": "10.0.14",
+        "contentHash": "Wz+IgL2xpg8KJ4i2VWj6uz1PmZNu4Q0Ljlwd73P9Vze5NcOBtctLii3itV0PB2MpOqwqDEGfB6RCdv94A4E5yQ=="
       },
       "System.Security.Cryptography.ProtectedData": {
         "type": "Transitive",
@@ -331,7 +331,7 @@
           "Microsoft.Data.SqlClient": "[7.1.1, )",
           "MySqlConnector": "[2.6.2, )",
           "Npgsql": "[10.0.3, )",
-          "System.Security.Cryptography.Pkcs": "[9.0.22, )"
+          "System.Security.Cryptography.Pkcs": "[10.0.14, )"
         }
       }
     }

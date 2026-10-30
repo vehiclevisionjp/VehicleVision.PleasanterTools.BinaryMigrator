@@ -6,6 +6,25 @@
     <RootNamespace>VehicleVision.PleasanterTools.BinaryMigrator.Cli</RootNamespace>
   </PropertyGroup>
 
+  <!--
+    nuget.org へ dotnet tool として公開する（手順は _documents/リリース手順.md）。
+    RID 非依存（framework-dependent）の単一パッケージで、.NET 10 ランタイムが前提。
+    Core は別パッケージにせず、このツールの出力へ含める（Core は IsPackable=false）。
+  -->
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>binary-migrator</ToolCommandName>
+    <PackageId>VehicleVision.PleasanterTools.BinaryMigrator</PackageId>
+    <Description>Pleasanter に添付されたファイル（Binaries）の保管先を、Rds・Local・AzureBlob の間で移すコマンドラインツール。</Description>
+    <PackageTags>pleasanter;vehiclevision;binaries;migration;azure-blob;dotnet-tool</PackageTags>
+  </PropertyGroup>
+
+  <!-- README とライセンス関連の文書をパッケージの直下へ同梱する（PackageReadmeFile は README.md、PackageLicenseFile は LICENSING.md。Directory.Build.props 参照）。
+       本文は LICENSE（AGPL-3.0）と LICENSE-COMMERCIAL.md -->
+  <ItemGroup>
+    <None Include="../../README.md;../../LICENSING.md;../../LICENSE-COMMERCIAL.md;../../LICENSE;../../NOTICE" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\VehicleVision.PleasanterTools.BinaryMigrator.Core\VehicleVision.PleasanterTools.BinaryMigrator.Core.csproj" />
   </ItemGroup>

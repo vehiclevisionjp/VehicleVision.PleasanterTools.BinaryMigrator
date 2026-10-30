@@ -19,7 +19,7 @@
 
   <!-- バージョンの単一情報源。各 .csproj へ個別に書かないこと。1.0.0 未満は互換を保証しない。 -->
   <PropertyGroup>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>0.2.0</VersionPrefix>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -29,12 +29,11 @@
     <Copyright>Copyright (C) PMC Co., Ltd. IT Solution Div.</Copyright>
     <!-- デュアルライセンス（AGPL-3.0-or-later OR 商用）。LICENSING.md を参照。
          NuGet の PackageLicenseExpression は LicenseRef-* を含む式を受け付けないため
-         ライセンスファイルを参照する -->
+         ライセンスファイルを参照する。同梱する文書は、パッケージ側の .csproj（Cli）で指定する -->
     <PackageLicenseFile>LICENSING.md</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/vehiclevisionjp/VehicleVision.PleasanterTools.BinaryMigrator</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/vehiclevisionjp/VehicleVision.PleasanterTools.BinaryMigrator</PackageProjectUrl>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)LICENSING.md" Pack="true" PackagePath="" />
-  </ItemGroup>
 </Project>
