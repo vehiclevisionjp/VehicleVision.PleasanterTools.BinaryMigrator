@@ -12,7 +12,6 @@
 # **一覧から外しても、それ以前の貢献に対する許諾は有効。**
 signatories:
   # Questionnaire・CalendarFeed の一覧と同じ署名（2026-08-19）を引き継いだ。署名者は当社の従業員（このリポジトリの作者）。
-  # AtomFeed でも引き継いだ署名として扱う（2026-10-17 決定）。CLA.md の草案の法務確認は別途。
   - login: pmc-ko
     signed: 2026-08-19
     type: corporate
