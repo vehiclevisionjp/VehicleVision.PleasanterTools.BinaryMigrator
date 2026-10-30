@@ -28,7 +28,7 @@
 
 ## 1. 個人用
 
-「本ソフトウェア」とは VehicleVision.PleasanterTools.AtomFeed を、
+「本ソフトウェア」とは VehicleVision.PleasanterTools.BinaryMigrator を、
 「貢献」とはあなたが本ソフトウェアへ提出する著作物（コード・文書・図・設定を含む）を指します。
 「当社」とは株式会社ピー・エム・シー ITソリューション事業部を指します。
 
