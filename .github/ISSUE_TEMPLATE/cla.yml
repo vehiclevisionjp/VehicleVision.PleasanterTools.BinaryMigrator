@@ -2,18 +2,15 @@ name: CLA への署名
 description: 貢献の前に、コントリビューターライセンス同意書へ署名します
 title: "CLA への署名: "
 labels:
-  - "documentation"
+  - "2-type:chore"
 body:
   - type: markdown
     attributes:
       value: |
         [`CLA.md`](../blob/develop/CLA.md) を読んでから記入してください。
-
-        **会社の業務として貢献する場合は、法人用の署名も要ります。**
-        勤務先の承認を先に取ってください。
-
+        会社の業務として貢献する場合は、法人用の署名と勤務先の承認も要ります。
         **法人として署名する場合は、この Issue に加えて、署名者の権限を確認できるメールを `group.development+cla@vehiclevision.jp` へ送ってください**（詳しくは CONTRIBUTING.md の「CLA へ署名する」）。
-
+        秘密情報や非公開の契約書をこの Issue に記入しないでください。
   - type: input
     id: login
     attributes:
@@ -21,7 +18,6 @@ body:
       placeholder: your-login
     validations:
       required: true
-
   - type: dropdown
     id: kind
     attributes:
@@ -31,14 +27,12 @@ body:
         - 法人として（法人用も併せて署名する）
     validations:
       required: true
-
   - type: input
     id: company
     attributes:
       label: 法人名（法人として署名する場合）
     validations:
       required: false
-
   - type: checkboxes
     id: agree
     attributes:
