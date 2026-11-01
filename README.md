@@ -156,5 +156,5 @@ binary-migrator migrate --from local --to azure --local-path D:\Pleasanter\App_D
 ## ライセンス
 
 AGPL-3.0-or-later と商用のデュアルライセンスです。詳しくは [LICENSING.md](LICENSING.md) を、貢献は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
-依存のライセンスは [NOTICE](NOTICE) にあります（SQL Server のドライバが引き込む一部の部品のライセンスは、配布前に確認が要ります）。
+依存のライセンスは [NOTICE](NOTICE) にあります（SQL Server のドライバが引き込む SNI.runtime の条件は、[LICENSING.md](LICENSING.md) の例外の節にあります）。
 開発環境と運用は [開発ガイド](_documents/開発ガイド.md) と [開発運用](_documents/開発運用.md) にあります。
