@@ -52,7 +52,7 @@ public sealed class CommandLineTests
             ["--from", "--to", "--dry-run", "--delete-source", "--yes", "--parallel", "--types", "--rds-dbms",
              "--local-path", "--azure-container", "BINARY_MIGRATOR_RDS_CONNECTION_STRING", "Exit codes"],
             expected => Assert.Contains(expected, CommandLine.HelpText));
-        var bad = CommandLine.HelpText.Where(c => !(c is >= ' ' and <= '~' or '\n')).Select(c => ((int)c).ToString()).Distinct().ToArray();
+        var bad = CommandLine.HelpText.Where(c => !(c is >= ' ' and <= '~' or '\r' or '\n')).Select(c => ((int)c).ToString()).Distinct().ToArray();
         Assert.True(bad.Length == 0, "ヘルプはコンソールへ出すため ASCII だけにする: " + string.Join(",", bad));
     }
 
