@@ -12,7 +12,7 @@
     "lint:md:fix": "node scripts/markdownlint.mjs --fix"
   },
   "devDependencies": {
-    "markdownlint": "0.42.0"
+    "markdownlint": "0.42.1"
   },
   "overrides": {
     "re2js": "2.8.7",
