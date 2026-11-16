@@ -70,8 +70,6 @@ DB の列・外部ストレージの名前・読み出しの判定などは、�
 
 採用元（参照日: 2026-10-27）:
 
-- [Template の配布手順][procedure]（SHA `3312f003fbe9827090e20bc643800824bdf30e22`）
 - [git clone](https://git-scm.com/docs/git-clone)（浅い clone とブランチ指定）
 - [git fetch](https://git-scm.com/docs/git-fetch)（`--depth` と `FETCH_HEAD`）
 
-[procedure]: https://github.com/vehiclevisionjp/VehicleVision.PleasanterTools.Template/blob/3312f003fbe9827090e20bc643800824bdf30e22/_documents/参照ソースのオンデマンド取得への配布手順.md
