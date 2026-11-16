@@ -56,6 +56,84 @@ jobs:
           name: テスト結果
           path: TestResults/*.trx
           if-no-files-found: warn
+  databases:
+    name: databases
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # CI 用のダミー値。本番の資格情報ではない
+      TESTENV_PASSWORD: Bm#Test1pass
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2025-CU8-ubuntu-24.04
+        env:
+          ACCEPT_EULA: 'Y'
+          MSSQL_SA_PASSWORD: Bm#Test1pass
+          MSSQL_PID: Developer
+          TZ: Asia/Tokyo
+        ports:
+          - 21434:1433
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_PASSWORD: Bm#Test1pass
+          POSTGRES_DB: bmtest
+          TZ: Asia/Tokyo
+        ports:
+          - 25433:5432
+      mysql:
+        image: mysql:26
+        env:
+          MYSQL_ROOT_PASSWORD: Bm#Test1pass
+          MYSQL_DATABASE: bmtest
+          TZ: Asia/Tokyo
+        ports:
+          - 23307:3306
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: false
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: DB の起動を待つ
+        run: |
+          set -euo pipefail
+          wait_for() {
+            local label="$1" tries="$2"
+            shift 2
+            for i in $(seq 1 "$tries"); do
+              if "$@" >/dev/null 2>&1; then
+                echo "OK   $label（${i} 回目）"
+                return 0
+              fi
+              sleep 5
+            done
+            echo "NG   $label が起動しない" >&2
+            return 1
+          }
+          wait_for "SQL Server" 60             docker exec ${{ job.services.sqlserver.id }}             /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$TESTENV_PASSWORD" -C -b -Q "SELECT 1"
+          wait_for "PostgreSQL" 60             docker exec ${{ job.services.postgres.id }} pg_isready -U postgres
+          wait_for "MySQL" 60             docker exec ${{ job.services.mysql.id }}             mysqladmin ping -h 127.0.0.1 -uroot -p"$TESTENV_PASSWORD"
+      - name: SQL Server にデータベースを作る
+        run: >-
+          docker exec ${{ job.services.sqlserver.id }}
+          /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$TESTENV_PASSWORD" -C -b
+          -Q "IF DB_ID('bmtest') IS NULL CREATE DATABASE [bmtest];"
+      - name: ロック済み依存を復元する
+        run: dotnet restore --locked-mode
+      - name: ビルドする
+        run: dotnet build --no-restore -c Release
+      - name: 実 DB の結合テストを実行する
+        env:
+          # 設定しないと何も検証せずに緑になる。立てておくと、未設定の DBMS があればテストが落ちる
+          BM_REQUIRE_ALL_RDBMS: '1'
+          BM_TEST_SQLSERVER: Server=localhost,21434;Database=bmtest;User Id=sa;Password=Bm#Test1pass;TrustServerCertificate=True
+          BM_TEST_POSTGRESQL: Host=localhost;Port=25433;Database=bmtest;Username=postgres;Password=Bm#Test1pass
+          BM_TEST_MYSQL: Server=localhost;Port=23307;Database=bmtest;User=root;Password=Bm#Test1pass
+          TZ: Asia/Tokyo
+        run: dotnet test --no-build -c Release --filter "FullyQualifiedName~RdsIntegrationTests"
   instructions:
     name: instructions
     runs-on: ubuntu-latest
