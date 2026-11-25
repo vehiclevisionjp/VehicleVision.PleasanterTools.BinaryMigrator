@@ -20,7 +20,7 @@ public sealed record MigratorOptions
 }
 
 /// <summary>
-/// 移行の本体。<see cref="IBinarySource"/> から <see cref="IBinarySink"/> へ写し、移行先を読み戻して大きさとハッシュを確かめる。
+/// 移行の本体。<see cref="IBinarySource"/> から <see cref="IBinarySink"/> へコピーし、移行先を読み戻して大きさとハッシュを確かめる。
 /// 抽象にだけ依存する。1 件の失敗では止めず、集計して返す。全件に効く失敗（<see cref="FatalMigrationException"/>）は即座に止める。
 /// </summary>
 public sealed class Migrator
