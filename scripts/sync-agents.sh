@@ -45,7 +45,7 @@ Claude Code はローカルで `CLAUDE.md` を読み、そこから同じ参照�
 規約の本文が無いと届かないためです。**
 
 **規約の全文は [`.github/copilot-instructions.md`](.github/copilot-instructions.md) にあります。
-以下は同ファイルの「必ず守る規約」の写しです。作業前に参照元を必ず開いてください。**
+以下は同ファイルの「必ず守る規約」のコピーです。作業前に参照元を必ず開いてください。**
 
 <!-- この節は .github/copilot-instructions.md から生成される。ここを直接編集しないこと。
      編集は .github/copilot-instructions.md 側で行い、`scripts/sync-agents.sh` を実行する。 -->
